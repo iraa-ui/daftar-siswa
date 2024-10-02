@@ -1,27 +1,12 @@
 <?php
+session_start();
+$title ="HOME | DASHBOARD";
  include('isi/header.php');
-
-$students = [
-    [
-        "nama" => "ira",
-         "kelas" => "XI",
-         "jurusan" => "PPLG",
-         "umur" => 15,
-         "keterangan" => "Hadir",
-     ],
- 
-    [
-        "nama" => "haifazahra",
-         "kelas" => "XI",
-         "jurusan" => "PPLG",
-         "umur" => 17,
-         "keterangan" => "Sakit",
-     ],
- 
-];
+ include('backend/data.php');
 
 //echo count($students[0])
 $number = 1;
+
 ?>
 
 <div class="main-content">
@@ -29,9 +14,30 @@ $number = 1;
                 <div class="panel">
                     <div class="panel-header">
                         <h1>Daftar siswa</h1>
-                        <div id="tableSearch"></div>
+                        <a class="btn btn-success" href="/daftarsiswa/creat-student.php"><i class="fa-solid fa-plus"></i>Tambah</a >
                     </div>
                     <div class="panel-body">
+                        <?php if (isset($_SESSION['message'])) : ?>
+                            <div class="alert alert-success text-center">
+                                <?php echo $_SESSION['message'];
+                                unset($_SESSION['message']);
+                                ?>
+                            </div>
+                            <?php endif ?>
+                            <?php if (isset($_SESSION['deleted'])) : ?>
+                            <div class="alert alert-danger text-center">
+                                <?php echo $_SESSION['deleted'];
+                                unset($_SESSION['deleted']);
+                                ?>
+                            </div>
+                            <?php endif ?>
+                            <?php if (isset($_SESSION['updated'])) : ?>
+                            <div class="alert alert-warning text-center">
+                                <?php echo $_SESSION['updated'];
+                                unset($_SESSION['updated']);
+                                ?>
+                            </div>
+                            <?php endif ?>
                         <table class="table table-dashed recent-order-table" id="myTable">
                             <thead>
                                 <tr>
@@ -48,25 +54,36 @@ $number = 1;
                                 <?php foreach ($students as $student) : ?>
                                 <tr>
                                     <td><?= $number++ ?></td>
-                                    <td><?= $student['nama'] ?></td>
-                                    <td><?= $student['kelas'] ?></td>
-                                    <td><?= $student['jurusan'] ?></td>
-                                    <td><?= $student['umur'] ?></td>
+                                    <td><?= $student['name'] ?></td>
+                                    <td><?= $student['class'] ?></td>
+                                    <td><?= $student['major'] ?></td>
+                                    <td><?= $student['age'] ?></td>
 
-                                    <td> <?=
-                                          $student['keterangan'] == "Hadir" ?
-                                             '<span class="bg-success p-2 rounded text-light">Hadir</span>' :
-                                             '<span class="bg-danger p-2 rounded text-light">Sakit</span>'
+                                    <td> <?php
+                                         if($student['keterangan'] == 'HADIR'){
+                                            echo '<span class="bg-success p-2 rounded text-light">HADIR</span>';
+                                         }
+                                         else if ($student['keterangan'] == 'IZIN'){
+                                            echo '<span class="bg-info p-2 rounded text-light">IZIN</span>';
+                                         }
+                                         else if($student['keterangan'] == 'SAKIT'){
+                                            echo '<span class="bg-warning p-2 rounded text-light">SAKIT</span>';
+                                         }
+                                         else{
+                                            echo '<span class="bg-danger p-2 rounded text-light">ALFA</span>';
+                                         }
+                                             
                                           ?></td>                                  
                                     <td>
                                         <div class="btn-box">
-                                            <button><i class="fa-light fa-eye"></i></button>
-                                            <button><i class="fa-light fa-pen"></i></button>
-                                            <button><i class="fa-light fa-trash"></i></button>
+                                        <a href="/daftarsiswa/detail.php?id=<?= $student['id']?>"><i class="fa-light fa-eye"></i></a>
+                                        <a href="/daftarsiswa/update.php?id=<?= $student['id']?>"><i class="fa-light fa-pen"></i></a>
+                                        <a href="/daftarsiswa/backend/delete.php?id=<?= $student['id']?>"><i class="fa-light fa-trash"></i></a>
+                                        
                                         </div>
                                     </td>
                                 </tr>
-                                <?php endforeach ?>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                         <div class="table-bottom-control"></div>
